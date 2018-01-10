@@ -1,0 +1,95 @@
+body {
+	background-image: url('../img/bg.jpg');
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.masonry.grid {
+  display: block;
+}
+
+@media only screen and (min-width: 768px) {
+  .masonry.grid {
+    -webkit-column-count: 2;
+       -moz-column-count: 2;
+            column-count: 2;
+    -webkit-column-gap: 0;
+       -moz-column-gap: 0;
+            column-gap: 0;
+  }
+  
+  .ui.doubling.masonry.grid[class*="three column"] > .column {
+    width: 100% !important;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .masonry.grid {
+    -webkit-column-count: 4;
+       -moz-column-count: 4;
+            column-count: 4;
+  }
+}
+.main.container {
+margin-top: 2em;
+}
+
+.main.menu {
+border-radius: 0;
+border: none;
+box-shadow: none;
+transition:
+  box-shadow 0.5s ease,
+  padding 0.5s ease
+;
+}
+.main.menu .item img.logo {
+margin-right: 1.5em;
+}
+
+.overlay {
+float: left;
+margin: 0em 0em 1em 0em;
+}
+.overlay .menu {
+position: relative;
+left: 0;
+transition: left 0.5s ease;
+}
+
+.main.menu.fixed {
+background:#5E35B1;
+border: 1px solid #311B92;
+box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
+}
+.main.menu.fixed a, .main.menu.fixed a:hover  {
+color: #fff;
+}
+.overlay.fixed .menu {
+left: 800px;
+}
+
+.logo {
+	height: 2.9em;
+	width: 12.6em;
+}
+
+.text.container .left.floated.image {
+margin: 2em 2em 2em -4em;
+}
+.text.container .right.floated.image {
+margin: 2em -4em 2em 2em;
+}
+
+.ui.footer.segment {
+margin: 5em 0em 0em;
+padding: 5em 0em;
+}
+.ui.custom_navbar{
+	background:#5E35B1;
+}
+	.ui.action.input input[type="file"] {
+  display: none;
+}

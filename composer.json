@@ -1,0 +1,10 @@
+{
+	"config": {
+		 "vendor-dir": "vendor"
+	},
+    "require": {
+        "fzaninotto/faker": "^1.7",
+        "vlucas/phpdotenv": "^2.4",
+        "yohang88/letter-avatar" : "^1.0"
+    }
+}
