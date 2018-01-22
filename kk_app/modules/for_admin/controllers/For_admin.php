@@ -25,7 +25,7 @@ class For_admin extends CI_Controller {
 
 	public function index()
 	{
-		redirect('for_admin/kategori');
+		$this->statistik();
 	}
 
 	public function kategori($page=null)
@@ -114,6 +114,50 @@ class For_admin extends CI_Controller {
 					'categories' => $this->Post_model->read($this->tb_kategori)->result()
 				];
 				$data['content'] = $this->parser->parse('kategori/view', $data, TRUE);
+				$this->parser->parse('template', $data);
+				break;
+		}
+	}
+
+	public function statistik($page = null)
+	{
+		switch($page){
+			default:
+				// Mendapatkan data gambar picked terbanyak
+				$pick = "SELECT *, count(id_galeri) as jml_picked FROM picked
+						INNER JOIN galeri ON picked.id_galeri = galeri.id
+						GROUP BY id_galeri
+						ORDER BY jml_picked DESC
+						LIMIT 5";
+
+				// Mendapatkan data user yang banyak picked gambar
+				$us = "SELECT *, count(picked.id_user) as jml_picked FROM picked
+						INNER JOIN users ON picked.id_user = users.id
+						GROUP BY picked.id_user
+						ORDER BY jml_picked DESC
+						LIMIT 5";
+
+				// Mendapatkan data kategori terpopuler
+				$cat = "SELECT *, COUNT(kategori.id) AS jumlah FROM kategori
+						INNER JOIN galeri ON galeri.id_kategori = kategori.id
+						GROUP BY id_kategori
+						ORDER BY jumlah DESC
+						LIMIT 5";
+
+				// Mendapatkan data view gambar terbanyak
+				$img = "SELECT * FROM galeri
+						ORDER BY viewer DESC
+						LIMIT 5";
+
+				$data = [
+					'title'      => 'Pictone[ADMIN] - Statistik Pengguna',
+					'user'       => $this->ion_auth_model->user($this->session->userdata('user_id'))->row_array(),
+					'getUs' => $this->db->query($us)->result(),
+					'getPick' => $this->db->query($pick)->result(),
+					'getCat' => $this->db->query($cat)->result(),
+					'getImg' => $this->db->query($img)->result(),
+				];
+				$data['content'] = $this->parser->parse('statistik/view', $data, TRUE);
 				$this->parser->parse('template', $data);
 				break;
 		}

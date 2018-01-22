@@ -3,6 +3,9 @@
 	<div class="four wide column">
 		<div class="ui stacked segments">
 			<div class="ui segment">
+				<a href="<?php echo base_url('for_admin'); ?>"><p><i class="icon industry"></i> Statistik</p></a>
+			</div>
+			<div class="ui segment">
 				<p><i class="icon tags"></i> Kategori</p>
 			</div>
 			<div class="ui segment">

@@ -11,6 +11,15 @@ class Post_model extends CI_Model {
 		$this->db->insert($table,$data);
 	}
 
+	public function viewer($table, $data, $where=NULL){
+		if($where)
+            $this->db->where($where);
+
+        $this->db->set($data);
+
+		$this->db->update($table,$data);		
+	}
+
 	public function read($table, $where=NULL, $order=NULL, $type=NULL, $limit=NULL, $offset=NULL){
 		$this->db->from($table);
 

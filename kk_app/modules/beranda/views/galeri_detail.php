@@ -1,6 +1,7 @@
 <?php use YoHang88\LetterAvatar\LetterAvatar;
 	$ext = $this->Post_model->get_user($galeri['id_user'])->row();
-	$avatar = new LetterAvatar($ext->first_name.' '.$ext->last_name);
+  $avatar = new LetterAvatar($ext->first_name.' '.$ext->last_name);
+  $this->Post_model->viewer('galeri', array('viewer' => (int)$galeri['viewer']+1), array('id' => $galeri['id']));
 ?>
 <div class="ui grid">
   <div class="four column row">
