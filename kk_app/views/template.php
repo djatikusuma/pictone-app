@@ -460,6 +460,14 @@
 		$(".ui.small.modal.users").modal({
 			closable: true
 		});
+
+		// modal restore
+		$("#restore").click(function(){
+			$(".ui.small.modal.restore").modal('show');
+		});
+		$(".ui.small.modal.restore").modal({
+			closable: true
+		});
 	});
 
 	function readURL(input) {

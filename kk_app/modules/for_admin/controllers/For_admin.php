@@ -236,6 +236,114 @@ class For_admin extends CI_Controller {
 		}
 	}
 
+	public function database($page = null)
+	{
+		switch($page){
+			case 'backup':
+				$success = false;
+
+				$this->load->dbutil();
+				$prefs = array( 
+							'format'      => 'txt',             
+							'filename'    => "backup_".date('dmY_Gis')."_".mt_rand(0000, 9999).".sql"
+						);
+				$backup =& $this->dbutil->backup($prefs); 
+				// $db_name = "backup_".date('dmY_Gis')."_".mt_rand(0000, 9999).".zip";
+				$save = './kk_backup/'.$prefs['filename'];
+				$this->load->helper('file');
+				if(write_file($save, $backup)){
+					$hasil = array(
+						'msg'   => "Backup database berhasil, cek didirektori backup", 
+						'dberror' => 1, 
+						'alert' => 'info', 
+						'icon'  => 'info'
+					);
+				}else{
+					$hasil = array(
+						'msg'   => "Backup database gagal, cek kembali dan ulangi lagi", 
+						'dberror' => 1, 
+						'alert' => 'error', 
+						'icon'  => 'info'
+					);
+				}
+
+				
+				$this->session->set_flashdata($hasil);
+				redirect(base_url('for_admin/database'));
+				break;
+			case 'restore':
+				$post = $this->input->post(NULL);
+				if(!empty($post['status'])){
+					$this->load->helper('file');
+					$path = "./kk_assets/database/";
+					$config['upload_path'] = $path;
+					$config['allowed_types']="sql";
+					$this->load->library('upload',$config);
+					$this->upload->initialize($config);
+
+					if(!$this->upload->do_upload("datafile")){
+						$hasil = array(
+							'msg'   => "Restore database gagal, cek kembali dan ulangi lagi", 
+							'dberror' => 1, 
+							'alert' => 'error', 
+							'icon'  => 'info'
+						);
+						exit();
+					}
+
+					$file = $this->upload->data();
+					$db_name = $file['file_name'];
+								
+					$isi_file = file_get_contents($path . $db_name);
+					$string_query = rtrim( $isi_file, "\n;" );
+					$array_query = explode(";", $string_query);
+					
+					foreach($array_query as $query)
+					{
+						$this->db->query($query);
+					}
+
+					$path_to_file = $path . $fotoupload;
+					if(unlink($path_to_file)) {   
+						$hasil = array(
+							'msg'   => "Restore database berhasil", 
+							'dberror' => 1, 
+							'alert' => 'info', 
+							'icon'  => 'info'
+						);
+					}
+					else {
+						$hasil = array(
+							'msg'   => "Restore database gagal, cek kembali dan ulangi lagi", 
+							'dberror' => 1, 
+							'alert' => 'error', 
+							'icon'  => 'info'
+						);
+					}
+					
+				}else{
+					$hasil = array(
+						'msg'   => "Gagal karena tidak memiliki akses", 
+						'dberror' => 1, 
+						'alert' => 'error', 
+						'icon'  => 'info'
+					);
+				}
+
+				$this->session->set_flashdata($hasil);
+				redirect(base_url('for_admin/database'));
+				break;
+			default:
+				$data = [
+					'title' => 'Pictone[ADMIN] - Database',
+					'user'  => $this->ion_auth_model->user($this->session->userdata('user_id'))->row_array()
+				];
+				$data['content'] = $this->parser->parse('database/view', $data, TRUE);
+				$this->parser->parse('template', $data);
+				break;
+		}
+	}
+
 }
 
 /* End of file For_admin.php */

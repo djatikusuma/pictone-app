@@ -11,6 +11,9 @@
 			<div class="ui segment">
 				<a href="<?php echo base_url('for_admin/pengguna'); ?>"><p><i class="icon user"></i> User</p></a>
 			</div>
+            <div class="ui segment">
+				<a href="<?php echo base_url('for_admin/database'); ?>"><p><i class="icon book"></i> Database</p></a>
+			</div>
 		</div>
 	</div>
 	<div class="twelve wide column">
