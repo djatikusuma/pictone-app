@@ -238,20 +238,16 @@ class For_admin extends CI_Controller {
 
 	public function database($page = null)
 	{
+		$host = $_ENV['DBHOST'];
+		$user = $_ENV['DBUSER'];
+		$pass = $_ENV['DBPASS'];
+		$database = $_ENV['DBNAME'];
 		switch($page){
 			case 'backup':
-				$success = false;
+				$db_name = "backup_".date('dmY_Gis')."_".mt_rand(0000, 9999).".sql";
+				$save = FCPATH.'kk_backup/'.$db_name;
 
-				$this->load->dbutil();
-				$prefs = array( 
-							'format'      => 'txt',             
-							'filename'    => "backup_".date('dmY_Gis')."_".mt_rand(0000, 9999).".sql"
-						);
-				$backup =& $this->dbutil->backup($prefs); 
-				// $db_name = "backup_".date('dmY_Gis')."_".mt_rand(0000, 9999).".zip";
-				$save = './kk_backup/'.$prefs['filename'];
-				$this->load->helper('file');
-				if(write_file($save, $backup)){
+				if(shell_exec(FCPATH."mysql\bin\mysqldump --opt --host=$host --user=$user --password=$pass $database > $save").PHP_EOL){
 					$hasil = array(
 						'msg'   => "Backup database berhasil, cek didirektori backup", 
 						'dberror' => 1, 
@@ -273,9 +269,9 @@ class For_admin extends CI_Controller {
 				break;
 			case 'restore':
 				$post = $this->input->post(NULL);
+				$path = "./kk_assets/database/";
 				if(!empty($post['status'])){
 					$this->load->helper('file');
-					$path = "./kk_assets/database/";
 					$config['upload_path'] = $path;
 					$config['allowed_types']="sql";
 					$this->load->library('upload',$config);
@@ -293,33 +289,33 @@ class For_admin extends CI_Controller {
 
 					$file = $this->upload->data();
 					$db_name = $file['file_name'];
-								
-					$isi_file = file_get_contents($path . $db_name);
-					$string_query = rtrim( $isi_file, "\n;" );
-					$array_query = explode(";", $string_query);
 					
-					foreach($array_query as $query)
-					{
-						$this->db->query($query);
-					}
-
-					$path_to_file = $path . $fotoupload;
-					if(unlink($path_to_file)) {   
-						$hasil = array(
-							'msg'   => "Restore database berhasil", 
-							'dberror' => 1, 
-							'alert' => 'info', 
-							'icon'  => 'info'
-						);
-					}
-					else {
+					$restore = FCPATH.'kk_backup/'.$db_name;
+					if(shell_exec(FCPATH."mysql\bin\mysql --host=$host --user=$user --password=$pass $database < $restore").PHP_EOL){
+						$path_to_file = $path . $db_name;
+						if(unlink($path_to_file)) {   
+							$hasil = array(
+								'msg'   => "Restore database berhasil", 
+								'dberror' => 1, 
+								'alert' => 'info', 
+								'icon'  => 'info'
+							);
+						}else {
+							$hasil = array(
+								'msg'   => "Restore database gagal, cek kembali dan ulangi lagi", 
+								'dberror' => 1, 
+								'alert' => 'error', 
+								'icon'  => 'info'
+							);
+						}	
+					}else {
 						$hasil = array(
 							'msg'   => "Restore database gagal, cek kembali dan ulangi lagi", 
 							'dberror' => 1, 
 							'alert' => 'error', 
 							'icon'  => 'info'
 						);
-					}
+					}				
 					
 				}else{
 					$hasil = array(
